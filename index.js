@@ -1,50 +1,60 @@
-const { Client } = require('@notionhq/client');
-const { makeConsoleLogger } = require('@notionhq/client/build/src/logging');
+import fetch from "node-fetch";
 
-const notion = new Client({ auth: "secret_TErSOxpHrgxZUECA42JtSmf8oWxCGI789CSycvu3ZIA" });
+// Get these from Firebase DB later
+var key = "secret_TErSOxpHrgxZUECA42JtSmf8oWxCGI789CSycvu3ZIA";
+var databaseId = "c5034eb5e4da4562aea044afa8c47238";
 
 var curveFunc = 'LOG';
 
-(async () => {
-    const databaseId = 'c5034eb5e4da4562aea044afa8c47238';
-    notion.databases.query(
-        {
-            database_id: databaseId,
-            filter: {
-                property: 'Status',
-                status: {
-                    does_not_equal: "Completed"
-                }
-            }
+// Modifies "aggressiveness" of anti-procrastination factor
+var apAgression = 5;
+
+// Gets data for tasks
+async function getData() {
+    var out = null;
+
+    // HTTP request options
+    var options = {
+        method: 'POST', // I don't know why it's post either, don't ask me
+        headers: {
+            'Notion-Version': '2022-06-28',
+            'Authorization': key
+        },
+        body: {
+            page_size: 100
         }
-    ).then((res) => {
-        var entries = res.results;
+    };
 
-        // Sort entries in reverse chronological order
-        entries.sort((a, b) => Date.parse(b.created_time) - Date.parse(a.created_time));
+    // Execute HTTP request to Notion API
+    await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, options)
+        .then(res => res.json())
+        .then(res => {
+            var tasks = res.results;
 
-        // Anti-procrastination factor
-        apFactor = 95;
+            // Sort entries in reverse chronological order
+            tasks.sort((a, b) => Date.parse(b.created_time) - Date.parse(a.created_time));
 
-        var out = entries.map((e) => {
-            var start = Date.parse(e.created_time);
-            var end = Date.parse(e.properties.Deadline.date.start + 'T00:00:00.000Z');
+            // Anti-procrastination factor; inflates urgency of old tasks by a bit to encourage completion
+            var apFactor = 100 - apAgression;
 
-            return {
-                name: e.properties.Name.title[0].plain_text,
-                remaining: (end - Date.now()) / (end - start),
-                remaining_formatted: formatTime(end - start),
-                elapsed: (Date.now() - start) / (end - start),
-                deadline: end,
-                urgency: curve((Date.now() - start) / (end - start) * 100) * (apFactor += 5) / 100
-            };
-        });
+            out = tasks.map((t) => {
+                // Get start and end times in milliseconds since Unix epoch
+                var start = Date.parse(t.created_time);
+                var end = Date.parse(t.properties.Deadline.date.start + 'T00:00:00.000Z');
 
-        console.log(out);
+                return {
+                    name: t.properties.Name.title[0].plain_text,
+                    remaining: (end - Date.now()) / (end - start),
+                    remaining_formatted: formatTime(end - start),
+                    elapsed: (Date.now() - start) / (end - start),
+                    deadline: end,
+                    urgency: curve((Date.now() - start) / (end - start) * 100) * (apFactor += apAgression) / 100
+                };
+            });
+        }).catch(err => console.error("Error: ", err));
 
-        console.log(formatTime(Date.now()));
-    });
-})();
+    return out;
+}
 
 // Formats time into minutes, hours, and days. Use only for time intervals, and not dates.
 function formatTime(time) {
@@ -65,9 +75,11 @@ function curve(i) {
     if (curveFunc === 'LOG')
         // out = 50 * log_10(in), but uses sqrt function if this is lower than sqrt.
         return Math.log10(i) * 50 < Math.sqrt(i) * 10 ? Math.sqrt(i) * 10 : Math.log10(i) * 50;
+
     if (curveFunc === 'SQRT')
         // out = 10 * sqrt(in)
         return Math.sqrt(i) * 10;
+
     // out = in
     return i;
 }
