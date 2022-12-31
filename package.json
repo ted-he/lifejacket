@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@notionhq/client": "^2.2.3",
-    "node-fetch": "^3.3.0"
-  },
-  "type": "module"
-}
