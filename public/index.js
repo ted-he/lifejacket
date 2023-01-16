@@ -2,6 +2,8 @@
 var key = "secret_TErSOxpHrgxZUECA42JtSmf8oWxCGI789CSycvu3ZIA";
 var databaseId = "c5034eb5e4da4562aea044afa8c47238";
 
+// Changes curving behavior of urgency
+// LOG > SQRT > LIN > QUAD > EXP
 var curveFunc = 'LOG';
 
 // Modifies "aggressiveness" of anti-procrastination factor
@@ -77,6 +79,14 @@ function curve(i) {
     if (curveFunc === 'SQRT')
         // out = 10 * sqrt(in)
         return Math.sqrt(i) * 10;
+
+    if (curveFunc === 'QUAD')
+        // out = in^2 / 100
+        return i * i / 100;
+
+    if (curveFunc === 'EXP')
+        // out = 10^(in / 50)
+        return Math.pow(10, i / 50);
 
     // out = in
     return i;
