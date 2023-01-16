@@ -7,6 +7,12 @@ var curveFunc = 'LOG';
 // Modifies "aggressiveness" of anti-procrastination factor
 var apAgression = 5;
 
+getData().then((res) => {
+    res.sort((a, b) => a.urgency - b.urgency);
+
+
+});
+
 // Gets data for tasks
 async function getData() {
     var out = null;
