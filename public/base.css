@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+
+body {
+    margin-left: 1vw;
+    background: rgb(19, 19, 19);
+    color: #fff;
+    font-family: 'Jetbrains Mono', sans-serif;
+}
+
+@keyframes slideFromLeft {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.title {
+    animation: 1s ease-out 0s 1 slideFromLeft;
+    transition-timing-function: ease-out;
+}
+
+.card, .base {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 2rem;
+    color: #fff;
+    width: 100%;
+    border-radius: 0px;
+    transition: all 500ms;
+    overflow: hidden;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.card {
+    box-shadow: rgba(3, 8, 20, 0.5) 0px 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0px 0.075rem 0.175rem;
+    align-items: left;
+    padding-left: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 80%;
+    background: #353535;
+}
+
+.base {
+    position: relative;
+    height: 100%;
+    background: #252525;
+    animation: 0.5s ease-out 1s 1 slideFromLeft forwards;
+    transform: translateX(-120%);
+}
+
+.card:hover {
+    box-shadow: rgba(2, 8, 20, 0.1) 0px 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0px 0.175em 0.5em;
+}
+
+.base:hover > .card {
+    transform-origin: left top;
+    transform: translateX(-29.9vw);
+    transition-duration: .25s;
+    transition-timing-function: ease-in-out;
+}
+
+.basic-grid {
+    display: grid;
+    gap: 1vw;
+    grid-template-rows: repeat(5, 2.5vw);
+    grid-template-columns: 30vw;
+}

@@ -3,7 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+    <title>Lifejacket</title>
+
+    <link href="lifejacket-light.png" rel="icon" media="(prefers-color-scheme: light)" />
+    <link href="lifejacket-dark.png" rel="icon" media="(prefers-color-scheme: dark)" />
+
 
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/9.15.0/firebase-app-compat.js"></script>
@@ -22,9 +26,35 @@
       to avoid connecting the SDK to running emulators.
     -->
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+
+    <style>
+      @import url('./base.css');
+    </style>
   </head>
 
   <body>
+    <h1 class="title">Welcome to Lifejacket.</h1>
 
+    <section class="basic-grid">
+      <div class="base">
+        <div class="card">test</div>
+      </div>
+
+      <div class="base">
+        <div class="card">test</div>
+      </div>
+
+      <div class="base">
+        <div class="card">test</div>
+      </div>
+
+      <div class="base">
+        <div class="card">test</div>
+      </div>
+
+      <div class="base">
+        <div class="card">test</div>
+      </div>
+    </section>
   </body>
 </html>
