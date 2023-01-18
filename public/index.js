@@ -1,7 +1,3 @@
-// Get these from Firebase DB later
-var key = "secret_TErSOxpHrgxZUECA42JtSmf8oWxCGI789CSycvu3ZIA";
-var databaseId = "c5034eb5e4da4562aea044afa8c47238";
-
 // Changes curving behavior of urgency
 // LOG > SQRT > LIN > QUAD > EXP
 var curveFunc = 'LOG';
@@ -12,87 +8,67 @@ var apAgression = 5;
 getData().then((res) => {
     res.sort((a, b) => a.urgency - b.urgency);
 
-
+    pushCards(res);
 });
 
+// Generates HTML for each card from data at stores it in an array
 function genCards(data) {
     var html = [];
 
+    // Generate inner HTML for each card
     for (var i = 0; i < data.length; i++)
         html.push(`<div class="bar" id=bar${i}></div>
-                    <div class="card" id=card${i}>${data[i].name}</div>`);
+                    <div class="card" id=card${i}>${data[i].course} | ${data[i].name}</div>`);
 
     return html;
 }
 
 function pushCards(data) {
-    var tempData = [
-        {
-            name: "ASSIGNMENT 1",
-            remaining: 90,
-            remaining_formatted: 90,
-            elapsed: 90,
-            deadline: 90,
-            urgency: 25
-        },
-        {
-            name: "ASSIGNMENT 2",
-            remaining: 90,
-            remaining_formatted: 90,
-            elapsed: 90,
-            deadline: 90,
-            urgency: 50
-        },
-        {
-            name: "ASSIGNMENT 3",
-            remaining: 90,
-            remaining_formatted: 90,
-            elapsed: 90,
-            deadline: 90,
-            urgency: 75
-        }
-    ];
+    var html = genCards(data);
+    var len = data.length;
 
-    var html = genCards(tempData);
-    var len = tempData.length;
-
+    // Create a new card for each assignment
     for (var i = 0; i < len; i++) {
+        // Create new <div>
         var newCard = document.createElement("div");
+
+        // Set class to "base"
+        newCard.className = "base";
+
+        // Assign numbered id
         newCard.setAttribute("id", `base${i}`);
-        document.getElementById("grid").insertBefore(newCard, document.getElementById("newBase"));
+
+        // Replace inner HTML with card and bar
+        newCard.innerHTML = html[i];
+
+        // Add to document
+        document.getElementById("grid").insertBefore(newCard, document.getElementById("addNew"));
+        document.getElementById(`bar${i}`).style.background = getBarColor(data[i].urgency);
+        document.getElementById(`bar${i}`).style.width = data[i].urgency > 90 ? "100%" : `${10 + data[i].urgency}%`;
     }
-
-    document.getElementById("grid").insertBefore()
 }
 
+// Fades from green to red to dark red as urgency increases
 function getBarColor(urgency) {
+    // Green -> yellow
     if (urgency >= 0 && urgency <= 50)
-        return `rgb(255, ${urgency * 255 / 100}, 0)`;
+        return `rgb(${urgency * 255 / 50}, 255, 0)`;
+
+    // Yellow -> red
     if (urgency >= 0 && urgency <= 100)
-        return `rgb(255, ${urgency * 255 / 100}, 0)`;
+        return `rgb(255, ${(100 - urgency) * 255 / 50}, 0)`;
+
+    // Red -> black
     if (urgency > 100)
-        return `rgb(${355 - urgency * 2}, 0, 0)`;
-    return "#000000";
+        return `rgb(${355 - urgency * 1.5}, 0, 0)`;
+    return "#00ffff";
 }
 
-// Gets data for tasks
+// Sends a request to the localhost (where the clientside proxy is running) for data
 async function getData() {
     var out = null;
 
-    // HTTP request options
-    var options = {
-        method: 'POST', // I don't know why it's post either, don't ask me
-        headers: {
-            'Notion-Version': '2022-06-28',
-            'Authorization': key
-        },
-        body: {
-            page_size: 100
-        }
-    };
-
-    // Execute HTTP request to Notion API
-    await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, options)
+    await fetch(`http://localhost:5000/`)
         .then(res => res.json())
         .then(res => {
             var tasks = res.results;
@@ -110,6 +86,7 @@ async function getData() {
 
                 return {
                     name: t.properties.Name.title[0].plain_text,
+                    course: t.properties.Course.select.name,
                     remaining: (end - Date.now()) / (end - start),
                     remaining_formatted: formatTime(end - start),
                     elapsed: (Date.now() - start) / (end - start),
@@ -117,8 +94,9 @@ async function getData() {
                     urgency: curve((Date.now() - start) / (end - start) * 100) * (apFactor += apAgression) / 100
                 };
             });
-        }).catch(err => console.error("Error: ", err));
+        }).catch(e => console.error("Error: ", e));
 
+    console.log(out);
     return out;
 }
 
