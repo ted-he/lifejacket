@@ -33,27 +33,45 @@
   </head>
 
   <body>
-    <h1 class="title">Welcome to Lifejacket.</h1>
+    <h1 class="title">&gt; $ cd ~/projects/lifejacket</h1>
 
-    <section class="basic-grid">
+    <section class="basic-grid" id="grid">
       <div class="base">
+        <div class="bar"></div>
         <div class="card">test</div>
       </div>
 
       <div class="base">
+        <div class="bar"></div>
         <div class="card">test</div>
       </div>
 
       <div class="base">
+        <div class="bar"></div>
         <div class="card">test</div>
       </div>
 
       <div class="base">
+        <div class="bar"></div>
         <div class="card">test</div>
       </div>
 
-      <div class="base">
-        <div class="card">test</div>
+      <div class="newBase" id="addNew">
+        <div class="newBar">
+          <input type="text" placeholder="Name">
+          Due:
+          <input type="date">
+          <select>
+            <option value="COURSE 1">M136</option>
+            <option value="COURSE 2">M138</option>
+            <option value="COURSE 3">C136</option>
+            <option value="COURSE 4">C136L</option>
+            <option value="COURSE 5">PD1</option>
+            <option value="COURSE 6">P145</option>
+          </select>
+          <input type="button" class="newButton" value=">>>">
+        </div>
+        <div class="newCard">Add new...</div>
       </div>
     </section>
   </body>

@@ -15,6 +15,66 @@ getData().then((res) => {
 
 });
 
+function genCards(data) {
+    var html = [];
+
+    for (var i = 0; i < data.length; i++)
+        html.push(`<div class="bar" id=bar${i}></div>
+                    <div class="card" id=card${i}>${data[i].name}</div>`);
+
+    return html;
+}
+
+function pushCards(data) {
+    var tempData = [
+        {
+            name: "ASSIGNMENT 1",
+            remaining: 90,
+            remaining_formatted: 90,
+            elapsed: 90,
+            deadline: 90,
+            urgency: 25
+        },
+        {
+            name: "ASSIGNMENT 2",
+            remaining: 90,
+            remaining_formatted: 90,
+            elapsed: 90,
+            deadline: 90,
+            urgency: 50
+        },
+        {
+            name: "ASSIGNMENT 3",
+            remaining: 90,
+            remaining_formatted: 90,
+            elapsed: 90,
+            deadline: 90,
+            urgency: 75
+        }
+    ];
+
+    var html = genCards(tempData);
+    var len = tempData.length;
+
+    for (var i = 0; i < len; i++) {
+        var newCard = document.createElement("div");
+        newCard.setAttribute("id", `base${i}`);
+        document.getElementById("grid").insertBefore(newCard, document.getElementById("newBase"));
+    }
+
+    document.getElementById("grid").insertBefore()
+}
+
+function getBarColor(urgency) {
+    if (urgency >= 0 && urgency <= 50)
+        return `rgb(255, ${urgency * 255 / 100}, 0)`;
+    if (urgency >= 0 && urgency <= 100)
+        return `rgb(255, ${urgency * 255 / 100}, 0)`;
+    if (urgency > 100)
+        return `rgb(${355 - urgency * 2}, 0, 0)`;
+    return "#000000";
+}
+
 // Gets data for tasks
 async function getData() {
     var out = null;

@@ -5,7 +5,35 @@ body {
     background: rgb(19, 19, 19);
     color: #fff;
     font-family: 'Jetbrains Mono', sans-serif;
+    font-size: 1vw;
 }
+
+h1 {
+    margin-top: 0;
+}
+
+select, input[type=text], input[type=date] {
+    font-family: 'Jetbrains Mono', sans-serif;
+    height: 50%;
+    outline: none;
+    border: 1px solid #00000000;
+}
+
+input[type=text] {
+    width: 30%;
+}
+
+input[type=date] {
+    width: 20%;
+}
+
+select:focus, input[type=text]:focus, input[type=date]:focus {
+    outline: none;
+    border: 1px solid #00000000;
+    border-bottom: 3px solid #00ff00;
+}
+
+/* TODO: make add new option, including course and due date options */
 
 @keyframes slideFromLeft {
     0% {
@@ -16,60 +44,120 @@ body {
     }
 }
 
+@keyframes pulse {
+    0% {
+        border: 2px solid #0f0;
+    }
+
+    70% {
+        border: 2px solid #ffffff00;
+    }
+
+    100% {
+        border: 2px solid #0f0;
+    }
+}
+
 .title {
     animation: 1s ease-out 0s 1 slideFromLeft;
     transition-timing-function: ease-out;
 }
 
-.card, .base {
+.card, .base, .newCard, .newBase {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    font-size: 2rem;
     color: #fff;
     width: 100%;
     border-radius: 0px;
     transition: all 500ms;
     overflow: hidden;
-
+    font-size: 1.5vw;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
 
-.card {
+.card, .newCard {
     box-shadow: rgba(3, 8, 20, 0.5) 0px 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0px 0.075rem 0.175rem;
     align-items: left;
-    padding-left: 10px;
+    padding-left: .7vw;
     position: absolute;
     top: 0;
     left: 0;
-    height: 80%;
+    height: 90%;
     background: #353535;
+    z-index: 3;
 }
 
-.base {
-    position: relative;
+.bar {
+    position:absolute;
+    text-align: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
+    background: #00ff00;
+    z-index: 1;
+}
+
+.base, .newBase {
+    position: relative;
     background: #252525;
     animation: 0.5s ease-out 1s 1 slideFromLeft forwards;
     transform: translateX(-120%);
 }
 
-.card:hover {
-    box-shadow: rgba(2, 8, 20, 0.1) 0px 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0px 0.175em 0.5em;
+.base:hover > .card {
+    background: #454545;
+    transition-duration: .25s;
+    transition-timing-function: ease-out;
 }
 
-.base:hover > .card {
-    transform-origin: left top;
-    transform: translateX(-29.9vw);
-    transition-duration: .25s;
-    transition-timing-function: ease-in-out;
+.newBar {
+    font-size: 60%;
+    position:absolute;
+    padding-left: 2%;
+    padding-top: 2%;
+    text-align: left;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #666666;
+    z-index: 1;
 }
 
 .basic-grid {
     display: grid;
     gap: 1vw;
-    grid-template-rows: repeat(5, 2.5vw);
+    /* grid-template-rows: repeat(5, 3vw); */
+    grid-auto-rows: 3vw;
     grid-template-columns: 30vw;
+    width: 30%;
+}
+
+.newBase:hover > .newCard {
+    transform: translateX(-99%);
+    background: #454545;
+}
+
+.newButton {
+    width: 10%;
+    height: 55%;
+    border-radius: 0px;
+    border: none;
+}
+
+select {
+    width: 18.5%;
+    height: 55%;
+    border-radius: 0px;
+    border: none;
+}
+
+.newButton:hover {
+    animation: pulse 1s infinite;
 }
