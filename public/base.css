@@ -78,6 +78,10 @@ select:focus, input[type=text]:focus, input[type=date]:focus {
     background-repeat: no-repeat;
 }
 
+.base {
+    transform: scaleY(100%);
+}
+
 .card, .newCard {
     box-shadow: rgba(3, 8, 20, 0.5) 0px 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0px 0.075rem 0.175rem;
     align-items: left;

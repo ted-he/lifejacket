@@ -5,11 +5,27 @@ var curveFunc = 'LOG';
 // Modifies "aggressiveness" of anti-procrastination factor
 var apAgression = 5;
 
-getData().then((res) => {
-    res.sort((a, b) => a.urgency - b.urgency);
-
+getTasks().then((res) => {
+    res.sort((a, b) => b.urgency - a.urgency);
     pushCards(res);
 });
+
+getCourses().then((res) => {
+    genCourses(res);
+});
+
+document.getElementById("submit").addEventListener('click', async (e) => {
+    // TODO: make this button push stuff to the notion db
+})
+
+function genCourses(data) {
+    var html = "";
+
+    for (var i = 0; i < data.length; i++)
+        html += `<option value="${data[i]}">${data[i]}</option>`;
+
+    document.getElementById("courses").innerHTML = html;
+}
 
 // Generates HTML for each card from data at stores it in an array
 function genCards(data) {
@@ -44,7 +60,7 @@ function pushCards(data) {
         // Add to document
         document.getElementById("grid").insertBefore(newCard, document.getElementById("addNew"));
         document.getElementById(`bar${i}`).style.background = getBarColor(data[i].urgency);
-        document.getElementById(`bar${i}`).style.width = data[i].urgency > 90 ? "100%" : `${10 + data[i].urgency}%`;
+        document.getElementById(`bar${i}`).style.width = data[i].urgency > 95 ? "100%" : `${5 + data[i].urgency}%`;
     }
 }
 
@@ -64,11 +80,31 @@ function getBarColor(urgency) {
     return "#00ffff";
 }
 
-// Sends a request to the localhost (where the clientside proxy is running) for data
-async function getData() {
+async function getCourses() {
     var out = null;
 
-    await fetch(`http://localhost:5000/`)
+    var options = {
+        method: 'GET'
+    };
+
+    await fetch('http://localhost:5000/database', options)
+        .then(res => res.json())
+        .then(res => {
+            out = res.properties.Course.select.options.map(c => c.name);
+        }).catch(e => console.error("Error: ", e));
+
+    return out;
+}
+
+// Sends a request to the localhost (where the clientside proxy is running) for data
+async function getTasks() {
+    var out = null;
+
+    var options = {
+        method: 'GET'
+    };
+
+    await fetch(`http://localhost:5000/tasks`, options)
         .then(res => res.json())
         .then(res => {
             var tasks = res.results;
@@ -96,7 +132,6 @@ async function getData() {
             });
         }).catch(e => console.error("Error: ", e));
 
-    console.log(out);
     return out;
 }
 
